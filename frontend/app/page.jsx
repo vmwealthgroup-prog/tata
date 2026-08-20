@@ -11,7 +11,7 @@ export default function Home() {
       <p>Welcome to VM Algo Pro.</p>
 
       <ul>
-        <li>Live Market Data</li>
+        <li>Market Data</li>
         <li>Bank Nifty Analysis</li>
         <li>Option Chain Scanner</li>
         <li>AI Trading Signals</li>
