@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,15 +15,21 @@
     padding: 0;
 }
 
+html, body {
+    height: 100%;
+}
+
 body {
     background: #0b0f14;
     color: #e8edf3;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 
 .container {
     min-height: 100vh;
     padding: 18px;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -36,11 +41,13 @@ body {
     border-radius: 10px;
     padding: 16px 20px;
     margin-bottom: 15px;
+    gap: 20px;
 }
 
 .logo {
     font-size: 24px;
     font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .logo span {
@@ -52,6 +59,13 @@ body {
     align-items: center;
     gap: 8px;
     font-size: 13px;
+    margin-left: auto;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .dot {
@@ -59,6 +73,23 @@ body {
     height: 9px;
     border-radius: 50%;
     background: #00e676;
+    animation: pulse 2s infinite;
+}
+
+.dot.inactive {
+    animation: none;
+    background: #ff5252;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.timestamp {
+    font-size: 11px;
+    color: #8fa2b5;
+    margin-left: 15px;
 }
 
 .controls {
@@ -81,25 +112,63 @@ button {
     background: #18212b;
     color: white;
     padding: 0 13px;
+    font-size: 14px;
+    transition: all 0.2s ease;
 }
 
 input {
-    width: 180px;
+    width: 140px;
+    min-width: 100px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #00d4ff;
+    background: #1a2330;
+}
+
+select {
+    width: 140px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 20px;
+    padding-right: 32px;
 }
 
 button {
     cursor: pointer;
     font-weight: 700;
+    min-width: 120px;
 }
 
 button:hover {
-    opacity: .85;
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .primary {
     background: #00d4ff;
     color: #001018;
     border: none;
+}
+
+.secondary {
+    background: #1a2a38;
+    color: #00d4ff;
+    border: 1px solid #00d4ff;
 }
 
 .buy-btn {
@@ -120,6 +189,11 @@ button:hover {
     border: none;
 }
 
+.warning-btn.active {
+    background: #00c853;
+    color: white;
+}
+
 .danger-btn {
     background: #b71c1c;
     color: white;
@@ -128,8 +202,10 @@ button:hover {
 
 .dashboard {
     display: grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 1fr 340px;
     gap: 15px;
+    flex: 1;
+    overflow: hidden;
 }
 
 .chart-card,
@@ -137,6 +213,9 @@ button:hover {
     background: #111820;
     border: 1px solid #26313d;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .chart-header {
@@ -144,31 +223,64 @@ button:hover {
     border-bottom: 1px solid #26313d;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.chart-title {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.current-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: #00d4ff;
 }
 
 .chart {
-    height: 560px;
+    flex: 1;
+    min-height: 500px;
+    width: 100%;
 }
 
 .panel {
     padding: 15px;
+    overflow-y: auto;
 }
 
 .panel h3 {
     margin-bottom: 15px;
     color: #00d4ff;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .metric {
     display: flex;
     justify-content: space-between;
-    padding: 11px 0;
+    align-items: center;
+    padding: 10px 0;
     border-bottom: 1px solid #202a34;
-    font-size: 14px;
+    font-size: 13px;
+    gap: 10px;
+}
+
+.metric:last-child {
+    border-bottom: none;
+}
+
+.metric-label {
+    color: #8fa2b5;
+    flex: 1;
 }
 
 .value {
-    font-weight: bold;
+    font-weight: 700;
+    text-align: right;
+    flex: 0 0 auto;
 }
 
 .buy {
@@ -184,59 +296,216 @@ button:hover {
 }
 
 .signal-box {
-    margin-top: 18px;
+    margin-top: 20px;
     padding: 20px;
     text-align: center;
     border-radius: 8px;
     background: #18212b;
-    border: 1px solid #344150;
+    border: 2px solid #344150;
+    transition: all 0.3s ease;
+}
+
+.signal-box.buy-signal {
+    border-color: #00c853;
+    background: rgba(0, 200, 83, 0.05);
+}
+
+.signal-box.sell-signal {
+    border-color: #ff5252;
+    background: rgba(255, 82, 82, 0.05);
+}
+
+.signal-label {
+    font-size: 11px;
+    color: #8fa2b5;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
 }
 
 .signal {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 900;
-    margin-top: 8px;
+    letter-spacing: -1px;
 }
 
 .trade-panel {
     margin-top: 15px;
 }
 
+.trade-log-container {
+    overflow-x: auto;
+    border: 1px solid #202a34;
+    border-radius: 6px;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 12px;
 }
 
 th,
 td {
-    padding: 10px;
+    padding: 10px 8px;
     text-align: left;
-    border-bottom: 1px solid #26313d;
-    font-size: 13px;
+    border-bottom: 1px solid #202a34;
 }
 
 th {
     color: #8fa2b5;
+    font-weight: 600;
+    background: #0f1318;
+    position: sticky;
+    top: 0;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+tbody tr:hover {
+    background: #18212b;
 }
 
 .footer-info {
-    margin-top: 15px;
-    padding: 12px;
+    margin-top: auto;
+    padding: 12px 15px;
     background: #111820;
     border: 1px solid #26313d;
     border-radius: 8px;
-    font-size: 12px;
+    font-size: 11px;
     color: #8fa2b5;
+    line-height: 1.5;
 }
 
-@media(max-width: 900px) {
+.error-message {
+    background: rgba(255, 82, 82, 0.1);
+    border: 1px solid #ff5252;
+    color: #ff5252;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    display: none;
+    animation: slideIn 0.3s ease;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.success-message {
+    background: rgba(0, 200, 83, 0.1);
+    border: 1px solid #00c853;
+    color: #00c853;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    display: none;
+    animation: slideIn 0.3s ease;
+}
+
+.success-message.show {
+    display: block;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #202a34;
+}
+
+.stat {
+    font-size: 12px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 16px;
+    font-weight: 700;
+    display: block;
+    margin-top: 4px;
+}
+
+@media(max-width: 1200px) {
     .dashboard {
         grid-template-columns: 1fr;
     }
 
-    .chart {
-        height: 450px;
+    .panel {
+        max-height: 400px;
     }
+}
+
+@media(max-width: 768px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .status {
+        margin-left: 0;
+        margin-top: 8px;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    input,
+    select,
+    button {
+        width: 100%;
+    }
+
+    .chart {
+        min-height: 400px;
+    }
+
+    .signal {
+        font-size: 24px;
+    }
+
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 </style>
 </head>
@@ -251,10 +520,16 @@ th {
         </div>
 
         <div class="status">
-            <span class="dot"></span>
-            <span id="systemStatus">PAPER TRADING</span>
+            <div class="status-indicator">
+                <span class="dot" id="statusDot"></span>
+                <span id="systemStatus">PAPER TRADING</span>
+            </div>
+            <div class="timestamp" id="lastUpdate"></div>
         </div>
     </div>
+
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
 
     <div class="controls">
 
@@ -262,6 +537,7 @@ th {
             id="symbol"
             value="NIFTY"
             placeholder="Symbol"
+            maxlength="20"
         >
 
         <select id="interval">
@@ -272,19 +548,19 @@ th {
             <option value="D">1 Day</option>
         </select>
 
-        <button class="primary" onclick="loadMarket()">
+        <button class="primary" id="loadBtn" onclick="app.loadMarket()">
             LOAD MARKET
         </button>
 
-        <button onclick="refreshMarket()">
+        <button class="secondary" id="refreshBtn" onclick="app.refreshMarket()">
             REFRESH
         </button>
 
-        <button class="warning-btn" onclick="toggleAutoTrading()">
+        <button class="warning-btn" id="autoBtn" onclick="app.toggleAutoTrading()">
             AUTO: OFF
         </button>
 
-        <button class="danger-btn" onclick="emergencyStop()">
+        <button class="danger-btn" onclick="app.emergencyStop()">
             EMERGENCY STOP
         </button>
 
@@ -297,13 +573,13 @@ th {
             <div class="chart-card">
 
                 <div class="chart-header">
-                    <strong id="chartTitle">
+                    <div class="chart-title" id="chartTitle">
                         NIFTY — EMA 5/50
-                    </strong>
+                    </div>
 
-                    <span id="price">
+                    <div class="current-price" id="price">
                         -
-                    </span>
+                    </div>
                 </div>
 
                 <div
@@ -317,23 +593,22 @@ th {
 
                 <h3>Signal / Trade Log</h3>
 
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Signal</th>
-                            <th>Price</th>
-                            <th>EMA 5</th>
-                            <th>EMA 50</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="tradeLog">
-                    </tbody>
-
-                </table>
+                <div class="trade-log-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Signal</th>
+                                <th>Price</th>
+                                <th>EMA 5</th>
+                                <th>EMA 50</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tradeLog">
+                        </tbody>
+                    </table>
+                </div>
 
             </div>
 
@@ -344,65 +619,69 @@ th {
             <h3>Strategy Engine</h3>
 
             <div class="metric">
-                <span>Symbol</span>
+                <span class="metric-label">Symbol</span>
                 <span id="mSymbol" class="value">NIFTY</span>
             </div>
 
             <div class="metric">
-                <span>Timeframe</span>
+                <span class="metric-label">Timeframe</span>
                 <span id="mInterval" class="value">5m</span>
             </div>
 
             <div class="metric">
-                <span>EMA 5</span>
+                <span class="metric-label">EMA 5</span>
                 <span id="ema5" class="value">-</span>
             </div>
 
             <div class="metric">
-                <span>EMA 50</span>
+                <span class="metric-label">EMA 50</span>
                 <span id="ema50" class="value">-</span>
             </div>
 
             <div class="metric">
-                <span>Trend</span>
+                <span class="metric-label">Trend</span>
                 <span id="trend" class="value neutral">WAIT</span>
             </div>
 
             <div class="metric">
-                <span>Last Signal</span>
+                <span class="metric-label">Last Signal</span>
                 <span id="lastSignal" class="value neutral">NONE</span>
             </div>
 
             <div class="metric">
-                <span>Entry</span>
+                <span class="metric-label">Entry</span>
                 <span id="entry" class="value">-</span>
             </div>
 
             <div class="metric">
-                <span>Stop Loss</span>
+                <span class="metric-label">Stop Loss</span>
                 <span id="stopLoss" class="value">-</span>
             </div>
 
             <div class="metric">
-                <span>Target</span>
+                <span class="metric-label">Target</span>
                 <span id="target" class="value">-</span>
             </div>
 
             <div class="metric">
-                <span>Paper P&L</span>
+                <span class="metric-label">Paper P&L</span>
                 <span id="pnl" class="value">₹0</span>
             </div>
 
-            <div class="signal-box">
+            <div class="signal-box" id="signalBox">
+                <div class="signal-label">CURRENT SIGNAL</div>
+                <div id="signal" class="signal neutral">WAIT</div>
+            </div>
 
-                <div>CURRENT SIGNAL</div>
-
-                <div
-                    id="signal"
-                    class="signal neutral">
-                    WAIT
+            <div class="stats-row">
+                <div class="stat">
+                    <div style="color: #8fa2b5;">Total Trades</div>
+                    <span class="stat-value" id="totalTrades">0</span>
                 </div>
-
+                <div class="stat">
+                    <div style="color: #8fa2b5;">Win Rate</div>
+                    <span class="stat-value" id="winRate">-</span>
+                </div>
             </div>
 
         </div>
@@ -410,8 +689,7 @@ th {
     </div>
 
     <div class="footer-info">
-        Strategy: EMA 5/50 crossover | Signals are generated only after candle close |
-        Paper Trading Mode | Do not connect real broker credentials to this frontend.
+        🤖 Strategy: EMA 5/50 crossover | 📊 Signals after candle close | 📝 Paper Trading Mode | ⚠️ Never use real credentials | Last update: <span id="footerTime">-</span>
     </div>
 
 </div>
@@ -419,799 +697,566 @@ th {
 
 <script>
 
-let chart;
-let candleSeries;
-let ema5Series;
-let ema50Series;
+/**
+ * Global application state and configuration
+ */
+const app = {
+    // Chart instances
+    chart: null,
+    candleSeries: null,
+    ema5Series: null,
+    ema50Series: null,
 
-let candles = [];
+    // Market data
+    candles: [],
+    ema5: [],
+    ema50: [],
 
-let ema5 = [];
-let ema50 = [];
+    // Trading state
+    autoTrading: false,
+    emergency: false,
+    lastSignal: "NONE",
+    position: null,
+    paperPnL: 0,
+    totalTrades: 0,
+    winningTrades: 0,
 
-let autoTrading = false;
-let emergency = false;
+    // Debounce helpers
+    resizeTimeout: null,
+    lastRefresh: 0,
+    refreshDebounceMs: 1000,
 
-let lastSignal = "NONE";
+    /**
+     * Initialize application
+     */
+    init() {
+        this.setupEventListeners();
+        this.restoreState();
+        this.createChart();
+        this.loadMarket();
+        this.startTimeUpdater();
+    },
 
-let position = null;
+    /**
+     * Setup event listeners for inputs
+     */
+    setupEventListeners() {
+        document.getElementById('symbol').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.loadMarket();
+        });
 
-let paperPnL = 0;
+        document.getElementById('interval').addEventListener('change', () => {
+            this.updateIntervalDisplay();
+        });
 
+        window.addEventListener('resize', () => {
+            clearTimeout(this.resizeTimeout);
+            this.resizeTimeout = setTimeout(() => {
+                if (this.chart) this.chart.applyOptions({
+                    width: document.getElementById('chart').clientWidth
+                });
+            }, 250);
+        });
 
-/* =========================
-   EMA CALCULATION
-========================= */
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'e') {
+                e.preventDefault();
+                this.emergencyStop();
+            }
+        });
+    },
 
-function calculateEMA(values, period) {
+    /**
+     * Show error message
+     */
+    showError(message) {
+        const elem = document.getElementById('errorMessage');
+        elem.textContent = '❌ ' + message;
+        elem.classList.add('show');
+        setTimeout(() => elem.classList.remove('show'), 4000);
+        console.error('[ERROR]', message);
+    },
 
-    const result = [];
+    /**
+     * Show success message
+     */
+    showSuccess(message) {
+        const elem = document.getElementById('successMessage');
+        elem.textContent = '✅ ' + message;
+        elem.classList.add('show');
+        setTimeout(() => elem.classList.remove('show'), 3000);
+        console.log('[SUCCESS]', message);
+    },
 
-    if (values.length === 0) {
-        return result;
-    }
+    /**
+     * Create chart with Lightweight Charts
+     */
+    createChart() {
+        try {
+            const container = document.getElementById('chart');
+            if (!container) throw new Error('Chart container not found');
 
-    const multiplier = 2 / (period + 1);
-
-    let previousEMA = values[0];
-
-    result.push(previousEMA);
-
-    for (let i = 1; i < values.length; i++) {
-
-        const currentEMA =
-            ((values[i] - previousEMA) * multiplier)
-            + previousEMA;
-
-        result.push(currentEMA);
-
-        previousEMA = currentEMA;
-    }
-
-    return result;
-}
-
-
-/* =========================
-   CREATE CHART
-========================= */
-
-function createChart() {
-
-    const container =
-        document.getElementById("chart");
-
-    chart =
-        LightweightCharts.createChart(
-            container,
-            {
+            this.chart = LightweightCharts.createChart(container, {
                 layout: {
-                    background: {
-                        color: "#111820"
-                    },
-                    textColor: "#d8e0e8"
+                    background: { color: '#111820' },
+                    textColor: '#d8e0e8'
                 },
-
                 grid: {
-                    vertLines: {
-                        color: "#202a34"
-                    },
-                    horzLines: {
-                        color: "#202a34"
-                    }
+                    vertLines: { color: '#202a34' },
+                    horzLines: { color: '#202a34' }
                 },
-
                 timeScale: {
                     timeVisible: true,
                     secondsVisible: false
                 },
-
                 rightPriceScale: {
-                    borderColor: "#344150"
+                    borderColor: '#344150'
+                },
+                handleScale: {
+                    mouseWheel: true,
+                    pinch: true
                 }
-            }
-        );
-
-    candleSeries =
-        chart.addCandlestickSeries({
-            upColor: "#00c853",
-            downColor: "#ff1744",
-            borderVisible: false,
-            wickUpColor: "#00c853",
-            wickDownColor: "#ff1744"
-        });
-
-    ema5Series =
-        chart.addLineSeries({
-            color: "#00d4ff",
-            lineWidth: 2,
-            title: "EMA 5"
-        });
-
-    ema50Series =
-        chart.addLineSeries({
-            color: "#ffab00",
-            lineWidth: 2,
-            title: "EMA 50"
-        });
-
-    window.addEventListener(
-        "resize",
-        () => {
-            chart.applyOptions({
-                width: container.clientWidth
             });
+
+            this.candleSeries = this.chart.addCandlestickSeries({
+                upColor: '#00c853',
+                downColor: '#ff1744',
+                borderVisible: false,
+                wickUpColor: '#00c853',
+                wickDownColor: '#ff1744'
+            });
+
+            this.ema5Series = this.chart.addLineSeries({
+                color: '#00d4ff',
+                lineWidth: 2,
+                title: 'EMA 5'
+            });
+
+            this.ema50Series = this.chart.addLineSeries({
+                color: '#ffab00',
+                lineWidth: 2,
+                title: 'EMA 50'
+            });
+
+        } catch (error) {
+            this.showError('Failed to create chart: ' + error.message);
         }
-    );
-}
+    },
 
+    /**
+     * Calculate EMA (Exponential Moving Average)
+     */
+    calculateEMA(values, period) {
+        const result = [];
+        if (values.length === 0) return result;
 
-/* =========================
-   DEMO MARKET DATA
-========================= */
+        const multiplier = 2 / (period + 1);
+        let previousEMA = values[0];
+        result.push(previousEMA);
 
-function generateMarketData() {
-
-    candles = [];
-
-    let price = 25000;
-
-    const now =
-        Math.floor(Date.now() / 1000);
-
-    for (let i = 0; i < 250; i++) {
-
-        const time =
-            now - ((250 - i) * 300);
-
-        const movement =
-            (Math.random() - 0.48) * 80;
-
-        const open = price;
-
-        const close =
-            price + movement;
-
-        const high =
-            Math.max(open, close)
-            + Math.random() * 30;
-
-        const low =
-            Math.min(open, close)
-            - Math.random() * 30;
-
-        candles.push({
-            time,
-            open,
-            high,
-            low,
-            close
-        });
-
-        price = close;
-    }
-}
-
-
-/* =========================
-   UPDATE CHART
-========================= */
-
-function updateChart() {
-
-    if (!chart) {
-        createChart();
-    }
-
-    generateMarketData();
-
-    candleSeries.setData(candles);
-
-    const closes =
-        candles.map(c => c.close);
-
-    ema5 =
-        calculateEMA(closes, 5);
-
-    ema50 =
-        calculateEMA(closes, 50);
-
-    const ema5Data =
-        candles.map((c, i) => ({
-            time: c.time,
-            value: ema5[i]
-        }));
-
-    const ema50Data =
-        candles.map((c, i) => ({
-            time: c.time,
-            value: ema50[i]
-        }));
-
-    ema5Series.setData(ema5Data);
-
-    ema50Series.setData(ema50Data);
-
-    chart.timeScale().fitContent();
-
-    updateDashboard();
-
-    detectLatestCrossover();
-
-}
-
-
-/* =========================
-   CROSSOVER ENGINE
-========================= */
-
-function detectLatestCrossover() {
-
-    if (candles.length < 52) {
-        return;
-    }
-
-    const i = candles.length - 1;
-
-    const previousFast =
-        ema5[i - 1];
-
-    const previousSlow =
-        ema50[i - 1];
-
-    const currentFast =
-        ema5[i];
-
-    const currentSlow =
-        ema50[i];
-
-    let signal = null;
-
-    /*
-        BUY:
-
-        Previous EMA5 <= EMA50
-        AND
-        Current EMA5 > EMA50
-    */
-
-    if (
-        previousFast <= previousSlow &&
-        currentFast > currentSlow
-    ) {
-
-        signal = "BUY";
-
-    }
-
-    /*
-        SELL:
-
-        Previous EMA5 >= EMA50
-        AND
-        Current EMA5 < EMA50
-    */
-
-    else if (
-        previousFast >= previousSlow &&
-        currentFast < currentSlow
-    ) {
-
-        signal = "SELL";
-
-    }
-
-    if (signal) {
-
-        /*
-            Prevent duplicate signals
-        */
-
-        if (lastSignal !== signal) {
-
-            processSignal(
-                signal,
-                candles[i].close,
-                currentFast,
-                currentSlow,
-                candles[i].time
-            );
-
+        for (let i = 1; i < values.length; i++) {
+            const currentEMA = ((values[i] - previousEMA) * multiplier) + previousEMA;
+            result.push(currentEMA);
+            previousEMA = currentEMA;
         }
 
-    } else {
+        return result;
+    },
 
-        /*
-            Don't repeatedly generate
-            the same signal while trend continues.
-        */
+    /**
+     * Generate realistic demo market data
+     */
+    generateMarketData() {
+        this.candles = [];
+        let price = 25000;
+        const now = Math.floor(Date.now() / 1000);
 
-        if (
-            currentFast > currentSlow
-        ) {
+        for (let i = 0; i < 250; i++) {
+            const time = now - ((250 - i) * 300);
+            const volatility = 80 + (Math.sin(i / 50) * 40);
+            const movement = (Math.random() - 0.48) * volatility;
 
-            setTrend("BULLISH");
+            const open = price;
+            const close = price + movement;
+            const high = Math.max(open, close) + Math.random() * 30;
+            const low = Math.min(open, close) - Math.random() * 30;
 
+            this.candles.push({ time, open, high, low, close });
+            price = close;
+        }
+    },
+
+    /**
+     * Update chart with latest data
+     */
+    updateChart() {
+        try {
+            if (!this.chart) this.createChart();
+
+            this.generateMarketData();
+            this.candleSeries.setData(this.candles);
+
+            const closes = this.candles.map(c => c.close);
+            this.ema5 = this.calculateEMA(closes, 5);
+            this.ema50 = this.calculateEMA(closes, 50);
+
+            const ema5Data = this.candles.map((c, i) => ({
+                time: c.time,
+                value: this.ema5[i] || c.close
+            }));
+
+            const ema50Data = this.candles.map((c, i) => ({
+                time: c.time,
+                value: this.ema50[i] || c.close
+            }));
+
+            this.ema5Series.setData(ema5Data);
+            this.ema50Series.setData(ema50Data);
+
+            this.chart.timeScale().fitContent();
+            this.updateDashboard();
+            this.detectLatestCrossover();
+            this.updateLastRefreshTime();
+
+        } catch (error) {
+            this.showError('Chart update failed: ' + error.message);
+        }
+    },
+
+    /**
+     * Detect EMA 5/50 crossover
+     */
+    detectLatestCrossover() {
+        if (this.candles.length < 52) return;
+
+        const i = this.candles.length - 1;
+        const previousFast = this.ema5[i - 1];
+        const previousSlow = this.ema50[i - 1];
+        const currentFast = this.ema5[i];
+        const currentSlow = this.ema50[i];
+
+        let signal = null;
+
+        // BUY: EMA5 crosses above EMA50
+        if (previousFast <= previousSlow && currentFast > currentSlow) {
+            signal = 'BUY';
+        }
+        // SELL: EMA5 crosses below EMA50
+        else if (previousFast >= previousSlow && currentFast < currentSlow) {
+            signal = 'SELL';
+        }
+
+        if (signal && this.lastSignal !== signal) {
+            this.processSignal(signal, this.candles[i].close, currentFast, currentSlow, this.candles[i].time);
+        } else if (!signal) {
+            this.setTrend(currentFast > currentSlow ? 'BULLISH' : 'BEARISH');
+        }
+    },
+
+    /**
+     * Process trading signal
+     */
+    processSignal(signal, price, fast, slow, time) {
+        if (this.emergency) return;
+
+        this.lastSignal = signal;
+
+        const risk = price * 0.002;
+        let sl, target;
+
+        if (signal === 'BUY') {
+            sl = price - risk;
+            target = price + (risk * 2);
         } else {
-
-            setTrend("BEARISH");
-
+            sl = price + risk;
+            target = price - (risk * 2);
         }
 
-    }
-}
+        this.setSignalUI(signal, price, sl, target);
+        this.addTradeLog(time, signal, price, fast, slow);
 
+        if (this.autoTrading) {
+            this.openPaperPosition(signal, price, sl, target);
+            this.showSuccess(`${signal} signal auto-executed at ₹${price.toFixed(2)}`);
+        }
+    },
 
-/* =========================
-   SIGNAL PROCESSOR
-========================= */
-
-function processSignal(
-    signal,
-    price,
-    fast,
-    slow,
-    time
-) {
-
-    if (emergency) {
-        return;
-    }
-
-    lastSignal = signal;
-
-    const risk =
-        price * 0.002;
-
-    let sl;
-    let target;
-
-    if (signal === "BUY") {
-
-        sl =
-            price - risk;
-
-        target =
-            price + (risk * 2);
-
-        setSignalUI(
-            "BUY",
-            price,
-            sl,
-            target
-        );
-
-        addTradeLog(
-            time,
-            "BUY",
-            price,
-            fast,
-            slow
-        );
-
-        if (autoTrading) {
-
-            openPaperPosition(
-                "BUY",
-                price,
-                sl,
-                target
-            );
-
+    /**
+     * Open a paper trading position
+     */
+    openPaperPosition(side, price, sl, target) {
+        if (this.position) {
+            this.closePaperPosition(price);
         }
 
-    } else {
+        this.position = { side, entry: price, stopLoss: sl, target, quantity: 1 };
 
-        sl =
-            price + risk;
+        document.getElementById('entry').textContent = price.toFixed(2);
+        document.getElementById('stopLoss').textContent = sl.toFixed(2);
+        document.getElementById('target').textContent = target.toFixed(2);
+    },
 
-        target =
-            price - (risk * 2);
+    /**
+     * Close a paper trading position
+     */
+    closePaperPosition(price) {
+        if (!this.position) return;
 
-        setSignalUI(
-            "SELL",
-            price,
-            sl,
-            target
-        );
-
-        addTradeLog(
-            time,
-            "SELL",
-            price,
-            fast,
-            slow
-        );
-
-        if (autoTrading) {
-
-            openPaperPosition(
-                "SELL",
-                price,
-                sl,
-                target
-            );
-
+        let pnl = 0;
+        if (this.position.side === 'BUY') {
+            pnl = (price - this.position.entry) * this.position.quantity;
+        } else {
+            pnl = (this.position.entry - price) * this.position.quantity;
         }
 
+        this.paperPnL += pnl;
+        this.totalTrades++;
+
+        if (pnl > 0) this.winningTrades++;
+
+        this.position = null;
+
+        document.getElementById('pnl').textContent = '₹' + this.paperPnL.toFixed(2);
+        document.getElementById('totalTrades').textContent = this.totalTrades;
+
+        const winRate = this.totalTrades > 0
+            ? ((this.winningTrades / this.totalTrades) * 100).toFixed(1)
+            : '-';
+        document.getElementById('winRate').textContent = winRate + '%';
+
+        this.saveState();
+    },
+
+    /**
+     * Update UI with signal information
+     */
+    setSignalUI(signal, price, sl, target) {
+        const signalElement = document.getElementById('signal');
+        const lastSignalElement = document.getElementById('lastSignal');
+        const signalBox = document.getElementById('signalBox');
+
+        signalElement.textContent = signal;
+        lastSignalElement.textContent = signal;
+
+        const className = signal === 'BUY' ? 'buy' : 'sell';
+        signalElement.className = 'signal ' + className;
+        lastSignalElement.className = 'value ' + className;
+
+        signalBox.className = 'signal-box ' + (signal === 'BUY' ? 'buy-signal' : 'sell-signal');
+
+        document.getElementById('entry').textContent = price.toFixed(2);
+        document.getElementById('stopLoss').textContent = sl.toFixed(2);
+        document.getElementById('target').textContent = target.toFixed(2);
+    },
+
+    /**
+     * Update trend display
+     */
+    setTrend(trend) {
+        const element = document.getElementById('trend');
+        element.textContent = trend;
+        element.className = 'value ' + (trend === 'BULLISH' ? 'buy' : 'sell');
+    },
+
+    /**
+     * Update dashboard metrics
+     */
+    updateDashboard() {
+        const latest = this.candles[this.candles.length - 1];
+        const latestEMA5 = this.ema5[this.ema5.length - 1];
+        const latestEMA50 = this.ema50[this.ema50.length - 1];
+
+        document.getElementById('price').textContent = latest.close.toFixed(2);
+        document.getElementById('ema5').textContent = latestEMA5?.toFixed(2) || '-';
+        document.getElementById('ema50').textContent = latestEMA50?.toFixed(2) || '-';
+        document.getElementById('mSymbol').textContent = document.getElementById('symbol').value.toUpperCase();
+        document.getElementById('chartTitle').textContent = document.getElementById('symbol').value.toUpperCase() + ' — EMA 5/50';
+    },
+
+    /**
+     * Update interval display
+     */
+    updateIntervalDisplay() {
+        const intervalValue = document.getElementById('interval').value;
+        const intervalMap = { '1': '1m', '5': '5m', '15': '15m', '60': '1h', 'D': '1d' };
+        document.getElementById('mInterval').textContent = intervalMap[intervalValue] || '5m';
+    },
+
+    /**
+     * Add trade to log
+     */
+    addTradeLog(time, signal, price, fast, slow) {
+        const table = document.getElementById('tradeLog');
+        const row = document.createElement('tr');
+        const date = new Date(time * 1000);
+
+        row.innerHTML = `
+            <td>${date.toLocaleTimeString()}</td>
+            <td class="${signal === 'BUY' ? 'buy' : 'sell'}"><strong>${signal}</strong></td>
+            <td>${price.toFixed(2)}</td>
+            <td>${fast.toFixed(2)}</td>
+            <td>${slow.toFixed(2)}</td>
+            <td>${this.autoTrading ? 'AUTO' : 'SIGNAL'}</td>
+        `;
+
+        table.prepend(row);
+
+        // Keep only last 50 rows for performance
+        while (table.children.length > 50) {
+            table.removeChild(table.lastChild);
+        }
+    },
+
+    /**
+     * Toggle auto trading mode
+     */
+    toggleAutoTrading() {
+        if (this.emergency) {
+            this.showError('Emergency Stop is active. Reset system before trading.');
+            return;
+        }
+
+        this.autoTrading = !this.autoTrading;
+        const button = document.getElementById('autoBtn');
+        const status = document.getElementById('systemStatus');
+
+        if (this.autoTrading) {
+            button.textContent = 'AUTO: ON';
+            button.classList.add('active');
+            status.textContent = 'PAPER AUTO TRADING';
+            this.showSuccess('Auto trading enabled');
+        } else {
+            button.textContent = 'AUTO: OFF';
+            button.classList.remove('active');
+            status.textContent = 'PAPER TRADING';
+            this.showSuccess('Auto trading disabled');
+        }
+
+        this.saveState();
+    },
+
+    /**
+     * Emergency stop - halt all trading
+     */
+    emergencyStop() {
+        this.emergency = true;
+        this.autoTrading = false;
+
+        if (this.position) {
+            const latest = this.candles[this.candles.length - 1];
+            this.closePaperPosition(latest.close);
+        }
+
+        document.getElementById('systemStatus').textContent = 'EMERGENCY STOP';
+        document.getElementById('statusDot').classList.add('inactive');
+
+        const button = document.getElementById('autoBtn');
+        button.textContent = 'AUTO: OFF';
+        button.classList.remove('active');
+
+        this.showError('Emergency Stop Activated! System halted.');
+        this.saveState();
+    },
+
+    /**
+     * Load and refresh market
+     */
+    loadMarket() {
+        const symbol = document.getElementById('symbol').value.trim();
+        if (!symbol) {
+            this.showError('Please enter a valid symbol');
+            return;
+        }
+
+        this.emergency = false;
+        document.getElementById('statusDot').classList.remove('inactive');
+        document.getElementById('systemStatus').textContent = this.autoTrading ? 'PAPER AUTO TRADING' : 'PAPER TRADING';
+
+        this.updateChart();
+        this.updateIntervalDisplay();
+    },
+
+    /**
+     * Refresh market data with debouncing
+     */
+    refreshMarket() {
+        if (this.emergency) {
+            this.showError('System in emergency stop mode');
+            return;
+        }
+
+        const now = Date.now();
+        if (now - this.lastRefresh < this.refreshDebounceMs) {
+            return;
+        }
+
+        this.lastRefresh = now;
+        this.updateChart();
+    },
+
+    /**
+     * Update last refresh timestamp
+     */
+    updateLastRefreshTime() {
+        const now = new Date();
+        document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
+        document.getElementById('footerTime').textContent = now.toLocaleTimeString();
+    },
+
+    /**
+     * Start background time updater
+     */
+    startTimeUpdater() {
+        setInterval(() => {
+            this.updateLastRefreshTime();
+        }, 1000);
+    },
+
+    /**
+     * Save state to localStorage
+     */
+    saveState() {
+        const state = {
+            paperPnL: this.paperPnL,
+            totalTrades: this.totalTrades,
+            winningTrades: this.winningTrades,
+            autoTrading: this.autoTrading,
+            lastSignal: this.lastSignal
+        };
+        localStorage.setItem('viraAlgoState', JSON.stringify(state));
+    },
+
+    /**
+     * Restore state from localStorage
+     */
+    restoreState() {
+        const saved = localStorage.getItem('viraAlgoState');
+        if (saved) {
+            try {
+                const state = JSON.parse(saved);
+                Object.assign(this, state);
+                document.getElementById('pnl').textContent = '₹' + this.paperPnL.toFixed(2);
+                document.getElementById('totalTrades').textContent = this.totalTrades;
+                const winRate = this.totalTrades > 0
+                    ? ((this.winningTrades / this.totalTrades) * 100).toFixed(1)
+                    : '-';
+                document.getElementById('winRate').textContent = winRate + '%';
+            } catch (error) {
+                console.warn('Failed to restore state:', error);
+            }
+        }
     }
-}
-
-
-/* =========================
-   PAPER POSITION
-========================= */
-
-function openPaperPosition(
-    side,
-    price,
-    sl,
-    target
-) {
-
-    if (position) {
-
-        /*
-            Close previous position
-        */
-
-        closePaperPosition(price);
-    }
-
-    position = {
-
-        side,
-
-        entry: price,
-
-        stopLoss: sl,
-
-        target,
-
-        quantity: 1
-
-    };
-
-    document.getElementById("entry")
-        .textContent =
-        price.toFixed(2);
-
-    document.getElementById("stopLoss")
-        .textContent =
-        sl.toFixed(2);
-
-    document.getElementById("target")
-        .textContent =
-        target.toFixed(2);
-}
-
-
-/* =========================
-   CLOSE POSITION
-========================= */
-
-function closePaperPosition(price) {
-
-    if (!position) {
-        return;
-    }
-
-    let pnl = 0;
-
-    if (position.side === "BUY") {
-
-        pnl =
-            (price - position.entry)
-            * position.quantity;
-
-    } else {
-
-        pnl =
-            (position.entry - price)
-            * position.quantity;
-
-    }
-
-    paperPnL += pnl;
-
-    position = null;
-
-    document.getElementById("pnl")
-        .textContent =
-        "₹" + paperPnL.toFixed(2);
-}
-
-
-/* =========================
-   UI
-========================= */
-
-function setSignalUI(
-    signal,
-    price,
-    sl,
-    target
-) {
-
-    const signalElement =
-        document.getElementById("signal");
-
-    const lastSignalElement =
-        document.getElementById("lastSignal");
-
-    signalElement.textContent =
-        signal;
-
-    lastSignalElement.textContent =
-        signal;
-
-    signalElement.className =
-        "signal " +
-        (signal === "BUY"
-            ? "buy"
-            : "sell");
-
-    lastSignalElement.className =
-        "value " +
-        (signal === "BUY"
-            ? "buy"
-            : "sell");
-
-    document.getElementById("entry")
-        .textContent =
-        price.toFixed(2);
-
-    document.getElementById("stopLoss")
-        .textContent =
-        sl.toFixed(2);
-
-    document.getElementById("target")
-        .textContent =
-        target.toFixed(2);
-}
-
-
-function setTrend(trend) {
-
-    const element =
-        document.getElementById("trend");
-
-    element.textContent =
-        trend;
-
-    element.className =
-        "value " +
-        (
-            trend === "BULLISH"
-                ? "buy"
-                : "sell"
-        );
-}
-
-
-function updateDashboard() {
-
-    const latest =
-        candles[candles.length - 1];
-
-    const latestEMA5 =
-        ema5[ema5.length - 1];
-
-    const latestEMA50 =
-        ema50[ema50.length - 1];
-
-    document.getElementById("price")
-        .textContent =
-        latest.close.toFixed(2);
-
-    document.getElementById("ema5")
-        .textContent =
-        latestEMA5.toFixed(2);
-
-    document.getElementById("ema50")
-        .textContent =
-        latestEMA50.toFixed(2);
-
-    document.getElementById("mSymbol")
-        .textContent =
-        document.getElementById("symbol").value;
-
-    document.getElementById("chartTitle")
-        .textContent =
-        document.getElementById("symbol").value
-        + " — EMA 5/50";
-}
-
-
-/* =========================
-   TRADE LOG
-========================= */
-
-function addTradeLog(
-    time,
-    signal,
-    price,
-    fast,
-    slow
-) {
-
-    const table =
-        document.getElementById("tradeLog");
-
-    const row =
-        document.createElement("tr");
-
-    const date =
-        new Date(time * 1000);
-
-    row.innerHTML = `
-
-        <td>
-            ${date.toLocaleTimeString()}
-        </td>
-
-        <td class="${signal === "BUY"
-            ? "buy"
-            : "sell"}">
-
-            <strong>${signal}</strong>
-
-        </td>
-
-        <td>
-            ${price.toFixed(2)}
-        </td>
-
-        <td>
-            ${fast.toFixed(2)}
-        </td>
-
-        <td>
-            ${slow.toFixed(2)}
-        </td>
-
-        <td>
-            ${autoTrading
-                ? "AUTO"
-                : "SIGNAL"}
-        </td>
-    `;
-
-    table.prepend(row);
-}
-
-
-/* =========================
-   AUTO TRADING
-========================= */
-
-function toggleAutoTrading() {
-
-    if (emergency) {
-
-        alert(
-            "Emergency Stop is active. Reset system before trading."
-        );
-
-        return;
-    }
-
-    autoTrading =
-        !autoTrading;
-
-    const button =
-        document.querySelector(".warning-btn");
-
-    const status =
-        document.getElementById("systemStatus");
-
-    if (autoTrading) {
-
-        button.textContent =
-            "AUTO: ON";
-
-        button.style.background =
-            "#00c853";
-
-        button.style.color =
-            "#fff";
-
-        status.textContent =
-            "PAPER AUTO TRADING";
-
-    } else {
-
-        button.textContent =
-            "AUTO: OFF";
-
-        button.style.background =
-            "#ff9800";
-
-        button.style.color =
-            "#111";
-
-        status.textContent =
-            "PAPER TRADING";
-    }
-}
-
-
-/* =========================
-   EMERGENCY STOP
-========================= */
-
-function emergencyStop() {
-
-    emergency = true;
-
-    autoTrading = false;
-
-    if (position) {
-
-        const latest =
-            candles[candles.length - 1];
-
-        closePaperPosition(
-            latest.close
-        );
-    }
-
-    document.getElementById("systemStatus")
-        .textContent =
-        "EMERGENCY STOP";
-
-    alert(
-        "Emergency Stop Activated. No new trades will be processed."
-    );
-}
-
-
-/* =========================
-   LOAD MARKET
-========================= */
-
-function loadMarket() {
-
-    emergency = false;
-
-    document.getElementById("systemStatus")
-        .textContent =
-        autoTrading
-            ? "PAPER AUTO TRADING"
-            : "PAPER TRADING";
-
-    updateChart();
-}
-
-
-/* =========================
-   REFRESH
-========================= */
-
-function refreshMarket() {
-
-    if (emergency) {
-        return;
-    }
-
-    updateChart();
-}
-
-
-/* =========================
-   INITIALIZE
-========================= */
-
-window.onload = function() {
-
-    createChart();
-
-    loadMarket();
-
 };
+
+/**
+ * Initialize on page load
+ */
+window.addEventListener('DOMContentLoaded', () => {
+    app.init();
+});
 
 </script>
 
 </body>
 </html>
-```
