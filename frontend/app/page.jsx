@@ -1,9 +1,3 @@
-return (
-  <>
-    <h1 style={{color: 'red', fontSize: '50px'}}>TEST - IF YOU SEE THIS, REACT IS WORKING</h1>
-    {/* ... rest of your existing code */}
-  </>
-)
 'use client';
 
 import React from 'react';
