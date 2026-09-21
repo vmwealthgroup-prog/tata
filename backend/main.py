@@ -1,9 +1,12 @@
-from flask import Flask
-app = Flask(__name__)
+from flask import Flask, jsonify
+from flask_cors import CORS
 
-@app.route('/')
-def home():
-    return {'status':'VM Algo Pro Running'}
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+
+@app.route('/health')
+def health():
+    return jsonify({'status': 'VM Algo Pro Running', 'engine': 'active'})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
