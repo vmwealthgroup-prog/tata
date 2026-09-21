@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation'; // App Router hook
 export const metadata = {
   title: 'VM Algo Pro | Trading Platform',
   description: 'Real-time algorithmic trading dashboard',
