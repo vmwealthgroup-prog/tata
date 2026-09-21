@@ -1,8 +1,12 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
-  reactStrictMode: true,
+  // Move turbopack under experimental
+  experimental: {
+    turbopack: {
+      // your turbopack rules or options go here
+    },
+  },
 };
 
 module.exports = nextConfig;
