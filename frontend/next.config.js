@@ -1,11 +1,14 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Move turbopack under experimental
-  experimental: {
-    turbopack: {
-      // your turbopack rules or options go here
-    },
+  reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:5000/:path*', // Redirects Next.js API requests to Flask
+      },
+    ];
   },
 };
 
