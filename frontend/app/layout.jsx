@@ -1,16 +1,15 @@
-import './globals.css'; // Adjust path if globals.css is inside app/ or styles/
+import './globals.css';
 
 export const metadata = {
-  title: 'VM Algo Pro | Trading Platform',
-  description: 'Real-time algorithmic trading dashboard',
+  title: 'VM Algo Research Lab',
+  description: 'Trading Dashboard & Strategy Analytics',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-slate-950 text-slate-100 antialiased min-h-screen">
-        <Navbar />
-        <main>{children}</main>
+      <body className="bg-gray-900 text-white min-h-screen">
+        {children}
       </body>
     </html>
   );
