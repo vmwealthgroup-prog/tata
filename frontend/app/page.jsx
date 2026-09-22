@@ -1,4 +1,20 @@
 'use client';
+import Link from 'next/link';
+import { Coins } from 'lucide-react';
+
+// Inside your Header component in frontend/app/page.jsx:
+<div className="flex items-center gap-3">
+  {/* Existing Logo & Title */}
+
+  {/* Navigation Link to BTC Page */}
+  <Link 
+    href="/btc"
+    className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 rounded-lg text-xs font-semibold transition-all"
+  >
+    <Coins className="h-4 w-4" />
+    <span>BTC Crypto Terminal</span>
+  </Link>
+</div>
 
 import React, { useState, useEffect } from 'react';
 import { 
