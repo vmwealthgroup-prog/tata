@@ -4,7 +4,8 @@ from datetime import datetime
 from typing import List, Dict, Any, Optional
 
 import pandas as pd
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query
+import yfinance as yf
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from stock_master import fetch_nse_stocks, fetch_bse_stocks
 
@@ -20,6 +21,7 @@ app.add_middleware(
 
 # Global Stock Master Memory Cache
 ALL_STOCKS_CACHE: List[Dict[str, str]] = []
+
 
 @app.on_event("startup")
 async def load_stock_master():
@@ -68,38 +70,57 @@ def process_ema_crossovers(df: pd.DataFrame) -> List[Dict[str, Any]]:
     return df.to_dict(orient="records")
 
 
-def generate_mock_candles(symbol: str, count: int = 100) -> pd.DataFrame:
-    base_time = int(datetime.utcnow().timestamp()) - (count * 60)
-    price = 2500.0 if "TATA" in symbol else 1200.0
-    candles = []
+# --- Endpoint 2: Get Live Yahoo Finance OHLC + 5/20 EMA Signals ---
+@app.get("/api/signals/{symbol}")
+async def get_ema_signals(symbol: str, period: str = "1mo", interval: str = "15m"):
+    """
+    Fetches live historical market candles using yfinance.
+    Supports symbols like 'RELIANCE.NS' (NSE) or '500325.BO' (BSE).
+    """
+    try:
+        formatted_symbol = symbol.upper()
+        ticker = yf.Ticker(formatted_symbol)
+        df = ticker.history(period=period, interval=interval)
 
-    for i in range(count):
-        change = random.uniform(-5.0, 5.2)
-        price = max(10.0, round(price + change, 2))
-        open_p = round(price - random.uniform(-2, 2), 2)
-        high_p = round(max(price, open_p) + random.uniform(0.5, 3.0), 2)
-        low_p = round(min(price, open_p) - random.uniform(0.5, 3.0), 2)
+        if df.empty:
+            raise HTTPException(status_code=404, detail=f"No candle data found for {formatted_symbol}")
 
-        candles.append({
-            "time": base_time + (i * 60),
-            "open": open_p,
-            "high": high_p,
-            "low": low_p,
-            "close": price,
-            "volume": random.randint(500, 10000)
+        # Reset index to access Date/Datetime column
+        df = df.reset_index()
+
+        # Convert timestamp to Unix Epoch Seconds for Lightweight Charts
+        if "Datetime" in df.columns:
+            df["time"] = (df["Datetime"].astype("int64") // 10**9).astype(int)
+        elif "Date" in df.columns:
+            df["time"] = (df["Date"].astype("int64") // 10**9).astype(int)
+
+        # Standardize column names
+        df = df.rename(columns={
+            "Open": "open",
+            "High": "high",
+            "Low": "low",
+            "Close": "close",
+            "Volume": "volume"
         })
 
-    return pd.DataFrame(candles)
+        # Round values for clean JSON output
+        df["open"] = df["open"].round(2)
+        df["high"] = df["high"].round(2)
+        df["low"] = df["low"].round(2)
+        df["close"] = df["close"].round(2)
 
+        # Calculate 5/20 EMA and Signals
+        processed_data = process_ema_crossovers(df)
 
-# --- Endpoint 2: Get OHLC + 5/20 EMA Signals for ANY Symbol ---
-@app.get("/api/signals/{symbol}")
-async def get_ema_signals(symbol: str):
-    # Works for both 'RELIANCE.NS' (NSE) or '500325.BO' (BSE)
-    df = generate_mock_candles(symbol, 100)
-    processed_data = process_ema_crossovers(df)
-    return {
-        "symbol": symbol.upper(),
-        "count": len(processed_data),
-        "data": processed_data
-    }
+        return {
+            "symbol": formatted_symbol,
+            "period": period,
+            "interval": interval,
+            "count": len(processed_data),
+            "data": processed_data
+        }
+
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        raise HTTPException(status_code=500, detail=f"Error fetching data for {symbol}: {str(e)}")
