@@ -1,36 +1,78 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import StockSearch from '@/components/StockSearch';
+import TradingChart from '@/components/TradingChart';
 
-// Dynamically import chart component without SSR
-const TradingChart = dynamic(() => import("@/components/TradingChart"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-[450px] bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center text-slate-400">
-      Loading TradingView Engine...
-    </div>
-  ),
-});
+export default function Dashboard() {
+  const [selectedSymbol, setSelectedSymbol] = useState('TATA.NS');
+  const [chartData, setChartData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-export default function DashboardPage() {
-  const [chartData, setChartData] = useState([
-    { time: "2026-09-18", open: 102.5, high: 105.0, low: 101.2, close: 104.8 },
-    { time: "2026-09-19", open: 104.8, high: 107.4, low: 104.0, close: 106.2 },
-    { time: "2026-09-20", open: 106.2, high: 108.0, low: 105.5, close: 107.9 },
-    { time: "2026-09-21", open: 107.9, high: 110.2, low: 107.0, close: 109.5 },
-    { time: "2026-09-22", open: 109.5, high: 112.0, low: 108.8, close: 111.4 },
-  ]);
+  // Fetch candle & signal data whenever selectedSymbol updates
+  useEffect(() => {
+    async function fetchSymbolData() {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/signals/${selectedSymbol}`
+        );
+        
+        // Transform API response into Lightweight Charts format
+        const formattedData = response.data.data.map((item) => ({
+          time: item.time,
+          open: item.open,
+          high: item.high,
+          low: item.low,
+          close: item.close,
+        }));
+
+        setChartData(formattedData);
+      } catch (err) {
+        console.error('Failed to fetch stock data:', err);
+        setError('Failed to load chart data for ' + selectedSymbol);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (selectedSymbol) {
+      fetchSymbolData();
+    }
+  }, [selectedSymbol]);
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="p-6 bg-slate-950 min-h-screen text-slate-100 space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Algorithmic Trading Terminal</h1>
-          <p className="text-slate-400 text-sm">VM Algo Research Lab Engine</p>
+          <h1 className="text-2xl font-bold tracking-tight text-white">VM Algo Research Lab</h1>
+          <p className="text-xs text-slate-400">Live NSE & BSE EMA Crossover Dashboard</p>
         </div>
+
+        {/* Stock Search Component */}
+        <StockSearch onSelectSymbol={(symbol) => setSelectedSymbol(symbol)} />
       </div>
-      <TradingChart data={chartData} symbol="TATA.NS" />
+
+      <div className="flex items-center gap-3 bg-slate-900 border border-slate-800 p-3 rounded-lg w-fit">
+        <span className="text-xs text-slate-400 uppercase font-semibold">Active Symbol:</span>
+        <span className="text-sm font-bold text-emerald-400">{selectedSymbol}</span>
+      </div>
+
+      {/* Chart Canvas Container */}
+      {loading ? (
+        <div className="h-[480px] bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center">
+          <p className="text-slate-400 text-sm animate-pulse">Fetching live candles for {selectedSymbol}...</p>
+        </div>
+      ) : error ? (
+        <div className="h-[480px] bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center">
+          <p className="text-rose-400 text-sm">{error}</p>
+        </div>
+      ) : (
+        <TradingChart initialData={chartData} symbol={selectedSymbol} />
+      )}
     </div>
   );
 }
