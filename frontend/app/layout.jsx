@@ -2,7 +2,7 @@ import './globals.css'; // Adjust path if globals.css is inside app/ or styles/
 
 export const metadata = {
   title: 'VM Algo Pro | Trading Platform',
-  description: 'Real-time algorithmic trading dashboard',
+  description: 'Real-time algorithmic dashboard',
 };
 
 export default function RootLayout({ children }) {
