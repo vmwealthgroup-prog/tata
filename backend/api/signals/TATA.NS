@@ -1,1 +1,18 @@
 
+{
+  "symbol": "TATA.NS",
+  "count": 100,
+  "data": [
+    {
+      "time": 1774175000,
+      "open": 1002.5,
+      "high": 1008.0,
+      "low": 9.0,
+      "close": 1005.2,
+      "volume": 3200,
+      "ema5": 1003.1,
+      "ema20": 998.4,
+      "signal": "BUY"
+    }
+  ]
+}
