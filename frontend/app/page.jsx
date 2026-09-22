@@ -1,25 +1,14 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import { 
-  TrendingUp, TrendingDown, ShieldAlert, Zap, AlertTriangle, 
-  BarChart2, Activity, CheckCircle2, Cpu, Database, Search, Power, Sliders, Terminal
+  Cpu, Coins, TrendingUp, TrendingDown, ShieldAlert, Zap, AlertTriangle, 
+  BarChart2, Activity, CheckCircle2, Database, Search, Power, Sliders, Terminal
 } from 'lucide-react';
 
-const INITIAL_WATCHLIST = [
-  { symbol: 'TATA.NS', name: 'Tata Motors Ltd.', price: 984.50, change: 18.25, pct: 1.89, ema5: 982.10, ema20: 975.40, rsi: 62.4, signal: 'BUY', trend: 'Bullish Crossover', status: 'Active', volume: '4.2M' },
-  { symbol: 'NIFTY50', name: 'Nifty 50 Index', price: 23450.80, change: 124.60, pct: 0.53, ema5: 23410.00, ema20: 23380.50, rsi: 58.9, signal: 'BUY', trend: 'Bullish Crossover', status: 'Active', volume: '18.5M' },
-  { symbol: 'BANKNIFTY', name: 'Nifty Bank Index', price: 51200.15, change: -145.30, pct: -0.28, ema5: 51240.00, ema20: 51310.00, rsi: 44.2, signal: 'SELL', trend: 'Bearish Crossover', status: 'Active', volume: '12.1M' },
-  { symbol: 'RELIANCE.NS', name: 'Reliance Industries', price: 2940.00, change: 32.10, pct: 1.10, ema5: 2935.50, ema20: 2910.20, rsi: 66.8, signal: 'BUY', trend: 'Bullish Crossover', status: 'Paused', volume: '3.1M' },
-  { symbol: 'INFY.NS', name: 'Infosys Limited', price: 1540.25, change: -8.40, pct: -0.54, ema5: 1542.00, ema20: 1548.00, rsi: 41.5, signal: 'HOLD', trend: 'Consolidating', status: 'Active', volume: '2.8M' },
-  { symbol: 'SILVER.NS', name: 'Silver Futures', price: 89450.00, change: 820.00, pct: 0.93, ema5: 89200.00, ema20: 88600.00, rsi: 61.1, signal: 'BUY', trend: 'Bullish Crossover', status: 'Active', volume: '890K' },
-];
-
-const INITIAL_LOGS = [
-  { id: 'LOG-9942', timestamp: '15:29:41', symbol: 'TATA.NS', action: 'BUY', qty: 25, price: 984.50, mode: 'PAPER', status: 'EXECUTED', message: 'EMA 5 crossed above EMA 20 (15m timeframe)' },
-  { id: 'LOG-9941', timestamp: '15:15:02', symbol: 'NIFTY50', action: 'BUY', qty: 50, price: 23410.00, mode: 'PAPER', status: 'EXECUTED', message: 'Strategy Signal Crossover Confirmed' },
-  { id: 'LOG-9940', timestamp: '14:45:18', symbol: 'BANKNIFTY', action: 'SELL', qty: 15, price: 51310.00, mode: 'PAPER', status: 'EXECUTED', message: 'Stop Loss Trailing Triggered' },
-  { id: 'LOG-9939', timestamp: '14:00:00', symbol: 'RELIANCE.NS', action: 'HOLD', qty: 0, price: 2910.20, mode: 'SYSTEM', status: 'SKIPPED', message: 'Auto-trade paused for symbol' },
-];
+// ====================================================================
+// SHARED UI COMPONENTS (LIFTED UP)
+// ====================================================================
 
 // SVG Chart Visualizer Component
 function ChartVisualizer({ stock }) {
@@ -70,7 +59,47 @@ function ChartVisualizer({ stock }) {
   );
 }
 
-export default function App() {
+// ====================================================================
+// SUB-VIEW COMPONENTS
+// ====================================================================
+
+// 1. Placeholder for BTC Auto-Trading View (To be replaced with your full BTC dashboard)
+function BTCAutoTradingView() {
+  return (
+    <div className="flex-1 p-10 flex flex-col items-center justify-center gap-6 text-center bg-slate-950/20 rounded-xl border-2 border-slate-800 border-dashed m-6">
+      <div className="h-16 w-16 rounded-3xl bg-amber-500/10 flex items-center justify-center shadow-xl shadow-amber-500/10 ring-2 ring-amber-400/40">
+        <Coins className="h-10 w-10 text-amber-400" />
+      </div>
+      <div className="max-w-md">
+        <h1 className="text-3xl font-extrabold bg-gradient-to-r from-amber-400 to-yellow-500 bg-clip-text text-transparent">
+          BTC Crypto Trading Terminal
+        </h1>
+        <p className="text-slate-400 mt-3 text-sm leading-relaxed">
+          The Bitcoin Automated Trading view is not yet initialized. Replace the placeholder content in <code className="text-cyan-400 bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono">frontend/app/page.jsx</code> with your full BTC dashboard component.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// 2. The full Indian Market Dashboard (Converted from the Second Snippet's main App)
+const INITIAL_WATCHLIST = [
+  { symbol: 'TATA.NS', name: 'Tata Motors Ltd.', price: 984.50, change: 18.25, pct: 1.89, ema5: 982.10, ema20: 975.40, rsi: 62.4, signal: 'BUY', trend: 'Bullish Crossover', status: 'Active', volume: '4.2M' },
+  { symbol: 'NIFTY50', name: 'Nifty 50 Index', price: 23450.80, change: 124.60, pct: 0.53, ema5: 23410.00, ema20: 23380.50, rsi: 58.9, signal: 'BUY', trend: 'Bullish Crossover', status: 'Active', volume: '18.5M' },
+  { symbol: 'BANKNIFTY', name: 'Nifty Bank Index', price: 51200.15, change: -145.30, pct: -0.28, ema5: 51240.00, ema20: 51310.00, rsi: 44.2, signal: 'SELL', trend: 'Bearish Crossover', status: 'Active', volume: '12.1M' },
+  { symbol: 'RELIANCE.NS', name: 'Reliance Industries', price: 2940.00, change: 32.10, pct: 1.10, ema5: 2935.50, ema20: 2910.20, rsi: 66.8, signal: 'BUY', trend: 'Bullish Crossover', status: 'Paused', volume: '3.1M' },
+  { symbol: 'INFY.NS', name: 'Infosys Limited', price: 1540.25, change: -8.40, pct: -0.54, ema5: 1542.00, ema20: 1548.00, rsi: 41.5, signal: 'HOLD', trend: 'Consolidating', status: 'Active', volume: '2.8M' },
+  { symbol: 'SILVER.NS', name: 'Silver Futures', price: 89450.00, change: 820.00, pct: 0.93, ema5: 89200.00, ema20: 88600.00, rsi: 61.1, signal: 'BUY', trend: 'Bullish Crossover', status: 'Active', volume: '890K' },
+];
+
+const INITIAL_LOGS = [
+  { id: 'LOG-9942', timestamp: '15:29:41', symbol: 'TATA.NS', action: 'BUY', qty: 25, price: 984.50, mode: 'PAPER', status: 'EXECUTED', message: 'EMA 5 crossed above EMA 20 (15m timeframe)' },
+  { id: 'LOG-9941', timestamp: '15:15:02', symbol: 'NIFTY50', action: 'BUY', qty: 50, price: 23410.00, mode: 'PAPER', status: 'EXECUTED', message: 'Strategy Signal Crossover Confirmed' },
+  { id: 'LOG-9940', timestamp: '14:45:18', symbol: 'BANKNIFTY', action: 'SELL', qty: 15, price: 51310.00, mode: 'PAPER', status: 'EXECUTED', message: 'Stop Loss Trailing Triggered' },
+  { id: 'LOG-9939', timestamp: '14:00:00', symbol: 'RELIANCE.NS', action: 'HOLD', qty: 0, price: 2910.20, mode: 'SYSTEM', status: 'SKIPPED', message: 'Auto-trade paused for symbol' },
+];
+
+function IndianMarketDashboard() {
   const [watchlist, setWatchlist] = useState(INITIAL_WATCHLIST);
   const [selectedSymbol, setSelectedSymbol] = useState('TATA.NS');
   const [isLiveExecution, setIsLiveExecution] = useState(false);
@@ -175,63 +204,35 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col selection:bg-cyan-500/30">
+    <div className="flex-1 flex flex-col p-4 lg:p-6 bg-slate-950">
       
-      {/* Top Header */}
-      <header className="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-6 py-3">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400/40">
-              <Cpu className="h-6 w-6 text-white animate-pulse" />
+      {/* Risk & Engine Capital Section (Lifted from sub-header) */}
+      <div className="max-w-7xl mx-auto w-full mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-slate-900/90 border border-slate-800 rounded-xl px-4 py-3 shadow-lg shadow-slate-950/20 backdrop-blur-sm">
+            <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Total Capital</div>
+            <div className="text-lg font-semibold font-mono text-slate-200">₹5,00,000.00</div>
+          </div>
+          <div className="bg-slate-900/90 border border-slate-800 rounded-xl px-4 py-3 shadow-lg shadow-slate-950/20 backdrop-blur-sm">
+            <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Margin Used</div>
+            <div className="text-lg font-semibold font-mono text-slate-300">₹1,20,000.00</div>
+          </div>
+          <div className="bg-slate-900/90 border border-slate-800 rounded-xl px-4 py-3 shadow-lg shadow-slate-950/20 backdrop-blur-sm">
+            <div className="text-xs uppercase tracking-wider text-slate-400 font-medium">Unrealized P&L</div>
+            <div className={`text-lg font-bold font-mono flex items-center gap-1.5 ${unrealizedPnL >= 0 ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.3)]' : 'text-rose-400'}`}>
+              {unrealizedPnL >= 0 ? '+' : ''}₹{unrealizedPnL.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </div>
+          </div>
+          <div className="flex items-center gap-3 bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 rounded-xl px-4 py-3 text-sm font-mono shadow-lg shadow-slate-950/20 backdrop-blur-sm">
+            <Database className="h-5 w-5 text-emerald-500 animate-pulse" />
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-lg tracking-wider bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500 bg-clip-text text-transparent">
-                  VM ALGO RESEARCH LAB
-                </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono font-semibold">
-                  PROFIT v2.4
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 flex items-center gap-2">
-                <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-                <span>Market: <strong className="text-slate-200">OPEN (NSE/BSE)</strong></span>
-                <span className="text-slate-600">|</span>
-                <span>Latency: <strong className="font-mono text-cyan-400">{latency}ms</strong></span>
-              </p>
+              <div className="text-xs uppercase tracking-wider text-emerald-600 font-medium">Angel One API</div>
+              <strong className="text-emerald-300 font-semibold tracking-wide">CONNECTED</strong>
             </div>
           </div>
-
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="bg-slate-900/90 border border-slate-800 rounded-lg px-3 py-1.5 flex items-center gap-4">
-              <div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">Total Capital</div>
-                <div className="text-sm font-semibold font-mono text-slate-200">₹5,00,000.00</div>
-              </div>
-              <div className="h-7 w-[1px] bg-slate-800" />
-              <div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">Margin Used</div>
-                <div className="text-sm font-semibold font-mono text-slate-300">₹1,20,000.00</div>
-              </div>
-              <div className="h-7 w-[1px] bg-slate-800" />
-              <div>
-                <div className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">Unrealized P&L</div>
-                <div className={`text-sm font-bold font-mono flex items-center gap-1 ${unrealizedPnL >= 0 ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.3)]' : 'text-rose-400'}`}>
-                  {unrealizedPnL >= 0 ? '+' : ''}₹{unrealizedPnL.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </div>
-              </div>
-            </div>
-
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 rounded-lg text-xs font-mono">
-              <Database className="h-3.5 w-3.5" />
-              <span>ANGEL ONE API: <strong className="text-emerald-300">CONNECTED</strong></span>
-            </div>
-          </div>
-        </div>
-      </header>
+      </div>
 
       {/* Main Grid Layout */}
-      <div className="max-w-7xl mx-auto w-full p-4 lg:p-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="max-w-7xl mx-auto w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         {/* Engine Controls Section */}
         <div className="lg:col-span-12 bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 lg:p-5 backdrop-blur-sm shadow-xl">
@@ -558,18 +559,13 @@ export default function App() {
                     </td>
                     <td className="py-2 text-slate-300">{log.qty}</td>
                     <td className="py-2 text-slate-300">₹{log.price ? log.price.toFixed(2) : '-'}</td>
-                    <td className="py-2">
-                      <span className={`text-[10px] ${log.mode === 'LIVE' ? 'text-rose-400 font-bold' : 'text-cyan-400'}`}>
-                        {log.mode}
-                      </span>
+                    <td className="py-2 text-[10px] font-medium text-slate-400">
+                        {log.mode === 'LIVE' ? <span className='text-rose-400'>LIVE</span> : <span>PAPER</span>}
                     </td>
                     <td className="py-2">
-                      <span className="text-emerald-400 flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        {log.status}
-                      </span>
+                        {log.status === 'EXECUTED' ? <CheckCircle2 className='h-4 w-4 text-emerald-400'/> : <AlertTriangle className='h-4 w-4 text-red-500' />}
                     </td>
-                    <td className="py-2 text-slate-400 truncate max-w-xs">{log.message}</td>
+                    <td className="py-2 text-slate-400 max-w-xs truncate">{log.message}</td>
                   </tr>
                 ))}
               </tbody>
@@ -612,6 +608,78 @@ export default function App() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ====================================================================
+// MAIN PAGE EXPORT (THE SHELL)
+// ====================================================================
+
+export default function Page() {
+  const [activeTab, setActiveTab] = useState('NSE'); // 'NSE' | 'BTC'
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col selection:bg-cyan-500/30">
+      
+      {/* Top Header - Consolidated Platform UI */}
+      <header className="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-6 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          
+          {/* Logo & Platform Name */}
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 ring-1 ring-cyan-400/40">
+              <Cpu className="h-6 w-6 text-white animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-lg tracking-wider bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500 bg-clip-text text-transparent">
+                  VM ALGO RESEARCH LAB
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono font-semibold">
+                  QUANT v2.4
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 flex items-center gap-2">
+                <span className="inline-block h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                <span>Unified Trading Intelligence Platform</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Top Navigation Switcher */}
+          <div className="bg-slate-950 border border-slate-800 px-2 py-1.5 flex items-center gap-2 rounded-xl shadow-inner">
+            <button
+              onClick={() => setActiveTab('NSE')}
+              className={`flex items-center gap-2.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                activeTab === 'NSE' 
+                  ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20' 
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              <Cpu className="h-4 w-4" />
+              <span>Indian Equity</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('BTC')}
+              className={`flex items-center gap-2.5 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                activeTab === 'BTC' 
+                  ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20' 
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              <Coins className="h-4 w-4" />
+              <span>Crypto Auto-Trade</span>
+            </button>
+          </div>
+
+        </div>
+      </header>
+
+      {/* Dynamic Sub-View Rendering */}
+      {activeTab === 'NSE' ? <IndianMarketDashboard /> : <BTCAutoTradingView />}
+
     </div>
   );
 }
