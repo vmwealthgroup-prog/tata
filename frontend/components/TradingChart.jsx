@@ -3,18 +3,18 @@
 import { useEffect, useRef } from "react";
 import { createChart, ColorType } from "lightweight-charts";
 
-export default function TradingChart({ data = [], symbol = "TATA.NS" }) {
+export default function TradingChart({ initialData = [], symbol = "TATA.NS" }) {
   const chartContainerRef = useRef(null);
-  const chartRef = useRef(null);
   const seriesRef = useRef(null);
+  const wsRef = useRef(null);
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
-    // Initialize Lightweight Chart instance
+    // 1. Initialize Chart
     const chart = createChart(chartContainerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: "#090d16" }, // Slate-950 match
+        background: { type: ColorType.Solid, color: "#090d16" },
         textColor: "#94a3b8",
       },
       grid: {
@@ -22,10 +22,10 @@ export default function TradingChart({ data = [], symbol = "TATA.NS" }) {
         horzLines: { color: "#1e293b" },
       },
       width: chartContainerRef.current.clientWidth,
-      height: 450,
+      height: 480,
       timeScale: {
         timeVisible: true,
-        secondsVisible: false,
+        secondsVisible: true,
       },
     });
 
@@ -37,14 +37,22 @@ export default function TradingChart({ data = [], symbol = "TATA.NS" }) {
       wickDownColor: "#ef4444",
     });
 
-    if (data && data.length > 0) {
-      candlestickSeries.setData(data);
+    if (initialData.length > 0) {
+      candlestickSeries.setData(initialData);
     }
-
-    chartRef.current = chart;
     seriesRef.current = candlestickSeries;
 
-    // Handle responsive container resizing
+    // 2. Connect to FastAPI WebSocket Stream
+    const ws = new WebSocket(`ws://localhost:8000/ws/market-data/${symbol}`);
+    wsRef.current = ws;
+
+    ws.onmessage = (event) => {
+      const liveCandle = JSON.parse(event.data);
+      // Real-time update into TradingView series
+      candlestickSeries.update(liveCandle);
+    };
+
+    // 3. Handle Responsive Resizing
     const handleResize = () => {
       if (chartContainerRef.current) {
         chart.applyOptions({ width: chartContainerRef.current.clientWidth });
@@ -55,16 +63,21 @@ export default function TradingChart({ data = [], symbol = "TATA.NS" }) {
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      if (wsRef.current) wsRef.current.close();
       chart.remove();
     };
-  }, [data]);
+  }, [symbol]);
 
   return (
-    <div className="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg">
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-lg font-semibold text-slate-100">{symbol} Real-Time Chart</h3>
-        <span className="text-xs px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          Live Feed
+    <div className="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl">
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h3 className="text-xl font-bold text-white">{symbol}</h3>
+          <p className="text-xs text-slate-400">WebSocket Live Tick Feed</p>
+        </div>
+        <span className="flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Live Streaming
         </span>
       </div>
       <div ref={chartContainerRef} className="w-full rounded-lg overflow-hidden" />
