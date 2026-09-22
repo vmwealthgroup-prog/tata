@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import { 
   TrendingUp, TrendingDown, ShieldAlert, Zap, AlertTriangle, 
@@ -21,7 +22,6 @@ const INITIAL_LOGS = [
   { id: 'LOG-9939', timestamp: '14:00:00', symbol: 'RELIANCE.NS', action: 'HOLD', qty: 0, price: 2910.20, mode: 'SYSTEM', status: 'SKIPPED', message: 'Auto-trade paused for symbol' },
 ];
 
-// SVG Chart Visualizer Component
 function ChartVisualizer({ stock }) {
   const isBullish = stock.signal === 'BUY';
   return (
@@ -33,19 +33,16 @@ function ChartVisualizer({ stock }) {
             <stop offset="100%" stopColor={isBullish ? "#06b6d4" : "#f43f5e"} stopOpacity="0.0" />
           </linearGradient>
         </defs>
-        
-        {/* Background Grid Lines */}
+
         <line x1="0" y1="30" x2="500" y2="30" stroke="#1e293b" strokeDasharray="3 3" />
         <line x1="0" y1="75" x2="500" y2="75" stroke="#1e293b" strokeDasharray="3 3" />
         <line x1="0" y1="120" x2="500" y2="120" stroke="#1e293b" strokeDasharray="3 3" />
 
-        {/* Price Area Fill */}
         <path
           d={isBullish ? "M 0,110 Q 120,90 250,60 T 500,20 L 500,150 L 0,150 Z" : "M 0,20 Q 120,50 250,90 T 500,130 L 500,150 L 0,150 Z"}
           fill="url(#chartGradient)"
         />
 
-        {/* 20 EMA Line (Fuchsia) */}
         <path
           d={isBullish ? "M 0,115 Q 150,105 280,80 T 500,45" : "M 0,30 Q 150,45 280,75 T 500,115"}
           fill="none"
@@ -54,7 +51,6 @@ function ChartVisualizer({ stock }) {
           strokeDasharray="4 4"
         />
 
-        {/* 5 EMA Line (Cyan) */}
         <path
           d={isBullish ? "M 0,125 Q 130,95 260,55 T 500,15" : "M 0,15 Q 130,55 260,95 T 500,135"}
           fill="none"
@@ -62,7 +58,6 @@ function ChartVisualizer({ stock }) {
           strokeWidth="2.5"
         />
 
-        {/* Crossover Point Highlight */}
         <circle cx="260" cy={isBullish ? 55 : 95} r="5" fill="#38bdf8" className="animate-ping" />
         <circle cx="260" cy={isBullish ? 55 : 95} r="4" fill="#0284c7" />
       </svg>
@@ -70,7 +65,7 @@ function ChartVisualizer({ stock }) {
   );
 }
 
-export default function App() {
+export default function DashboardPage() {
   const [watchlist, setWatchlist] = useState(INITIAL_WATCHLIST);
   const [selectedSymbol, setSelectedSymbol] = useState('TATA.NS');
   const [isLiveExecution, setIsLiveExecution] = useState(false);
@@ -78,18 +73,15 @@ export default function App() {
   const [logs, setLogs] = useState(INITIAL_LOGS);
   const [searchTerm, setSearchTerm] = useState('');
   
-  // Risk Parameters
   const [maxOrderQty, setMaxOrderQty] = useState(50);
   const [dailyMaxLoss, setDailyMaxLoss] = useState(5000);
   const [stopLossPct, setStopLossPct] = useState(1.5);
   const [takeProfitPct, setTakeProfitPct] = useState(3.0);
   const [killSwitchActive, setKillSwitchActive] = useState(false);
 
-  // System Stats
   const [latency, setLatency] = useState(24);
   const [unrealizedPnL, setUnrealizedPnL] = useState(14250.00);
 
-  // Simulated live market price ticker pulse
   useEffect(() => {
     const interval = setInterval(() => {
       setLatency(Math.floor(Math.random() * 12) + 18);
@@ -177,7 +169,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans flex flex-col selection:bg-cyan-500/30">
       
-      {/* Top Header */}
+      {/* Header */}
       <header className="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-6 py-3">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -233,7 +225,7 @@ export default function App() {
       {/* Main Grid Layout */}
       <div className="max-w-7xl mx-auto w-full p-4 lg:p-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        {/* Engine Controls Section */}
+        {/* Engine Controls */}
         <div className="lg:col-span-12 bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 lg:p-5 backdrop-blur-sm shadow-xl">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-800/60">
             <div className="flex items-center gap-4">
@@ -354,7 +346,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Watchlist Column */}
+        {/* Watchlist */}
         <div className="lg:col-span-5 flex flex-col gap-4">
           <div className="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 backdrop-blur-sm shadow-xl flex-1 flex flex-col">
             <div className="flex items-center justify-between gap-2 mb-3 pb-3 border-b border-slate-800">
@@ -443,7 +435,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Chart Column */}
+        {/* Chart View */}
         <div className="lg:col-span-7 flex flex-col gap-6">
           <div className="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 backdrop-blur-sm shadow-xl flex-1 flex flex-col">
             <div className="flex items-center justify-between mb-3 pb-3 border-b border-slate-800">
@@ -516,7 +508,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Live Execution Terminal */}
+        {/* Execution Terminal */}
         <div className="lg:col-span-12 bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 backdrop-blur-sm shadow-xl">
           <div className="flex items-center justify-between mb-3 pb-3 border-b border-slate-800">
             <h3 className="font-bold text-sm uppercase tracking-wider text-slate-200 flex items-center gap-2">
