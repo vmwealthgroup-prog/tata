@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import StockSearch from '@/components/StockSearch';
 import TradingChart from '@/components/TradingChart';
+import ScannerTable from '@/components/ScannerTable';
 
 const TIMEFRAMES = [
   { label: '1M', interval: '1m', period: '1d' },
@@ -14,7 +15,7 @@ const TIMEFRAMES = [
 
 export default function Dashboard() {
   const [selectedSymbol, setSelectedSymbol] = useState('TATA.NS');
-  const [activeTf, setActiveTf] = useState(TIMEFRAMES[2]); // Default: 15M
+  const [activeTf, setActiveTf] = useState(TIMEFRAMES[2]); // Default 15M
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,7 +30,6 @@ export default function Dashboard() {
           `http://localhost:8000/api/signals/${selectedSymbol}?interval=${activeTf.interval}&period=${activeTf.period}`
         );
 
-        // Transform API response into Lightweight Charts format
         const formattedData = response.data.data.map((item) => ({
           time: item.time,
           open: item.open,
@@ -57,7 +57,7 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 bg-slate-950 min-h-screen text-slate-100 space-y-6">
-      {/* Top Bar */}
+      {/* Top Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white">VM Algo Research Lab</h1>
@@ -68,14 +68,14 @@ export default function Dashboard() {
         <StockSearch onSelectSymbol={(symbol) => setSelectedSymbol(symbol)} />
       </div>
 
-      {/* Active Symbol & Timeframe Selector Bar */}
+      {/* Control Strip: Active Symbol + Timeframes */}
       <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-3 rounded-lg">
         <div className="flex items-center gap-3">
           <span className="text-xs text-slate-400 uppercase font-semibold">Active Symbol:</span>
-          <span className="text-sm font-bold text-emerald-400">{selectedSymbol}</span>
+          <span className="text-sm font-bold text-emerald-400 font-mono">{selectedSymbol}</span>
         </div>
 
-        {/* Timeframe Selector Buttons */}
+        {/* Timeframe Buttons */}
         <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-md border border-slate-800">
           {TIMEFRAMES.map((tf) => (
             <button
@@ -93,20 +93,30 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Chart Canvas Container */}
-      {loading ? (
-        <div className="h-[480px] bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center">
-          <p className="text-slate-400 text-sm animate-pulse">
-            Fetching {activeTf.label} candles for {selectedSymbol}...
-          </p>
+      {/* Main Grid: Chart Canvas + Real-Time Scanner */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column (2/3): Trading Chart */}
+        <div className="lg:col-span-2">
+          {loading ? (
+            <div className="h-[480px] bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center">
+              <p className="text-slate-400 text-sm animate-pulse">
+                Fetching {activeTf.label} candles for {selectedSymbol}...
+              </p>
+            </div>
+          ) : error ? (
+            <div className="h-[480px] bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center">
+              <p className="text-rose-400 text-sm">{error}</p>
+            </div>
+          ) : (
+            <TradingChart initialData={chartData} symbol={selectedSymbol} />
+          )}
         </div>
-      ) : error ? (
-        <div className="h-[480px] bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-center">
-          <p className="text-rose-400 text-sm">{error}</p>
+
+        {/* Right Column (1/3): Live EMA Scanner Widget */}
+        <div className="lg:col-span-1">
+          <ScannerTable onSelectSymbol={(symbol) => setSelectedSymbol(symbol)} />
         </div>
-      ) : (
-        <TradingChart initialData={chartData} symbol={selectedSymbol} />
-      )}
+      </div>
     </div>
   );
 }
