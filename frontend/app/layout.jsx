@@ -1,4 +1,4 @@
-import Navbar from '@/components/Navbar'; // Adjust relative path if not using '@/' alias
+import './globals.css'; // Adjust path if globals.css is inside app/ or styles/
 
 export const metadata = {
   title: 'VM Algo Pro | Trading Platform',
