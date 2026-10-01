@@ -1,10 +1,9 @@
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
 import { 
   TrendingUp, TrendingDown, ShieldAlert, Zap, AlertTriangle, 
-  BarChart2, Activity, CheckCircle2, Cpu, Database, Search, Power, Sliders, Terminal
+  BarChart2, Activity, Cpu, Database, Search, Power, Sliders, Terminal
 } from 'lucide-react';
 
 const INITIAL_WATCHLIST = [
@@ -519,54 +518,36 @@ export default function DashboardPage() {
             <span className="text-xs text-slate-500 font-mono">Auto-scrolling active</span>
           </div>
 
-          <div className="bg-slate-950 rounded-lg p-3 font-mono text-xs overflow-x-auto max-h-56 border border-slate-800">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="text-slate-500 border-b border-slate-800 pb-2">
-                  <th className="pb-2 font-normal">TIME</th>
-                  <th className="pb-2 font-normal">ID</th>
-                  <th className="pb-2 font-normal">SYMBOL</th>
-                  <th className="pb-2 font-normal">ACTION</th>
-                  <th className="pb-2 font-normal">QTY</th>
-                  <th className="pb-2 font-normal">PRICE</th>
-                  <th className="pb-2 font-normal">MODE</th>
-                  <th className="pb-2 font-normal">STATUS</th>
-                  <th className="pb-2 font-normal">MESSAGE</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-900">
-                {logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-900/50 transition-colors">
-                    <td className="py-2 text-slate-400">{log.timestamp}</td>
-                    <td className="py-2 text-slate-500">{log.id}</td>
-                    <td className="py-2 font-bold text-slate-200">{log.symbol}</td>
-                    <td className="py-2">
-                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                        log.action === 'BUY' ? 'bg-emerald-500/20 text-emerald-400' :
-                        log.action === 'SELL' ? 'bg-rose-500/20 text-rose-400' :
-                        log.action === 'DANGER' ? 'bg-red-600 text-white' : 'bg-slate-800 text-slate-400'
-                      }`}>
-                        {log.action}
-                      </span>
-                    </td>
-                    <td className="py-2 text-slate-300">{log.qty}</td>
-                    <td className="py-2 text-slate-300">₹{log.price ? log.price.toFixed(2) : '-'}</td>
-                    <td className="py-2">
-                      <span className={`text-[10px] ${log.mode === 'LIVE' ? 'text-rose-400 font-bold' : 'text-cyan-400'}`}>
-                        {log.mode}
-                      </span>
-                    </td>
-                    <td className="py-2">
-                      <span className="text-emerald-400 flex items-center gap-1">
-                        <CheckCircle2 className="h-3 w-3" />
-                        {log.status}
-                      </span>
-                    </td>
-                    <td className="py-2 text-slate-400 truncate max-w-xs">{log.message}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="bg-slate-950 font-mono text-xs rounded-lg p-3 border border-slate-800/80 max-h-56 overflow-y-auto space-y-2">
+            {logs.map((log) => (
+              <div key={log.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1 border-b border-slate-900 text-slate-300">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-slate-500">[{log.timestamp}]</span>
+                  <span className="text-cyan-400 font-bold">{log.id}</span>
+                  <span className="text-slate-200 font-semibold">{log.symbol}</span>
+                  <span className={`px-1.5 py-0.5 text-[10px] rounded font-bold ${
+                    log.action === 'BUY' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                    log.action === 'SELL' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' :
+                    log.action === 'DANGER' ? 'bg-rose-600 text-white animate-pulse' :
+                    'bg-slate-800 text-slate-400'
+                  }`}>
+                    {log.action}
+                  </span>
+                  <span className="text-slate-400">{log.message}</span>
+                </div>
+
+                <div className="flex items-center gap-3 text-[11px] self-end sm:self-auto">
+                  {log.qty > 0 && <span className="text-slate-400">Qty: {log.qty} @ ₹{log.price.toFixed(2)}</span>}
+                  <span className={`text-[10px] px-1 rounded ${log.mode === 'LIVE' ? 'bg-rose-950 text-rose-400 border border-rose-800' : 'bg-slate-900 text-cyan-400 border border-slate-800'}`}>
+                    {log.mode}
+                  </span>
+                  <span className="text-emerald-400 flex items-center gap-1">
+                    <CheckCircle2 className="h-3 w-3" />
+                    {log.status}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -574,38 +555,46 @@ export default function DashboardPage() {
 
       {/* Confirmation Modal */}
       {showConfirmModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-          <div className="bg-slate-900 border border-rose-500/40 rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center gap-3 text-rose-400">
-              <AlertTriangle className="h-8 w-8 animate-bounce" />
-              <div>
-                <h3 className="font-bold text-lg text-slate-100">Switch to Live Broker Execution?</h3>
-                <p className="text-xs text-rose-300">Real money will be deployed on incoming signals.</p>
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="flex items-center gap-3 text-amber-400">
+              <AlertTriangle className="h-6 w-6" />
+              <h3 className="text-lg font-bold text-slate-100">Activate Live Broker Execution?</h3>
+            </div>
+            
+            <p className="text-xs text-slate-300 leading-relaxed">
+              You are about to switch from paper trading to live market order dispatch. Trades generated by strategy crossovers will execute immediately on your broker account using real funds.
+            </p>
+
+            <div className="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between text-slate-400">
+                <span>Max Quantity Per Order:</span>
+                <span className="text-slate-100 font-bold">{maxOrderQty} units</span>
+              </div>
+              <div className="flex justify-between text-slate-400">
+                <span>Daily Stop Loss Cap:</span>
+                <span className="text-rose-400 font-bold">₹{dailyMaxLoss}</span>
               </div>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed bg-slate-950 p-3 rounded-lg border border-slate-800">
-              You are about to enable <strong>LIVE EXECUTION ENGINE</strong>. Signals generated by VM Algo Research Lab will automatically place real orders on your connected broker account (Angel One API) up to your configured Max Order Quantity ({maxOrderQty} units).
-            </p>
-
-            <div className="flex items-center justify-end gap-3 pt-2">
+            <div className="flex justify-end gap-3 pt-2">
               <button
                 onClick={() => setShowConfirmModal(false)}
                 className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold"
               >
-                Cancel (Keep Paper Trading)
+                Cancel
               </button>
               <button
                 onClick={confirmLiveTrading}
-                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-rose-900/40"
+                className="px-4 py-2 rounded-lg bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white text-xs font-bold shadow-lg shadow-rose-900/30"
               >
-                Confirm Live Execution
+                I Understand, Activate Live Mode
               </button>
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }
-
