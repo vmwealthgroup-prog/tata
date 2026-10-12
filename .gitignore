@@ -1,21 +1,27 @@
-# Python / Virtual Environment
+# Python
+.venv/
 venv/
 ENV/
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+**/__pycache__/
+*.py[cod]
+
+# Environment variables
 .env
+.env.*
+!.env.example
 
-# Node.js / Next.js
-node_modules/
-.next/
-out/
-build/
-dist/
-*.log
+# Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
 
-# IDE & System Files
-.DS_Store
-.vscode/
+# IDE and operating system
 .idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

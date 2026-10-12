@@ -14,7 +14,7 @@ const TIMEFRAMES = [
 ];
 
 export default function Dashboard() {
-  const [selectedSymbol, setSelectedSymbol] = useState('TATA.NS');
+  const [selectedSymbol, setSelectedSymbol] = useState('TATAMOTORS.NS');
   const [activeTf, setActiveTf] = useState(TIMEFRAMES[2]); // Default 15M
   const [chartData, setChartData] = useState([]);
   const [loading, setLoading] = useState(true);
